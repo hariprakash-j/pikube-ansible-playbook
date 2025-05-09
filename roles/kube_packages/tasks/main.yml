@@ -34,6 +34,6 @@
 - name: Enable kubelet service
   ansible.builtin.service:
     name: kubelet
-    state: running
+    state: started
     enabled: true
   become: true
