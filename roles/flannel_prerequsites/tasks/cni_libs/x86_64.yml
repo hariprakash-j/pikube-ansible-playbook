@@ -1,7 +1,7 @@
 ---
-- name: Extract CNI libs into /opt/cni/bin
+- name: "Extract CNI libs {{ cni_libs_version }} for x86_64 into /opt/cni/bin"
   ansible.builtin.unarchive:
-    src: https://github.com/containernetworking/plugins/releases/download/v1.6.2/cni-plugins-linux-x86_64-v1.6.2.tgz
+    src: "https://github.com/containernetworking/plugins/releases/download/{{ cni_libs_version }}/cni-plugins-linux-x86_64-{{ cni_libs_version }}.tgz"
     remote_src: true
     dest: /opt/cni/bin
   become: true
