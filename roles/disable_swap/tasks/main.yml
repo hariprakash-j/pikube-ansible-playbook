@@ -1,0 +1,33 @@
+---
+- name: Turn off dphys-swapfile
+  ansible.builtin.command:
+    cmd: "dphys-swapfile swapoff && dphys-swapfile uninstall"
+  become: true
+  changed_when: false
+  failed_when: false
+  notify: Reboot system
+
+- name: Disable dphys-swapfile service
+  ansible.builtin.service:
+    name: dphys-swapfile
+    state: stopped
+    enabled: false
+  become: true
+  notify: Reboot system
+
+- name: Disable swap in sysctl
+  ansible.posix.sysctl:
+    name: vm.swappiness
+    value: '0'
+    state: present
+  become: true
+  notify: Reboot system
+
+- name: Delete the swap file
+  ansible.builtin.file:
+    name: /var/swap
+    state: absent
+  become: true
+
+- name: Flush handlers
+  meta: flush_handlers

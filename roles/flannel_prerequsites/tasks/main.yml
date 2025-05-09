@@ -1,0 +1,12 @@
+---
+- name: Ensure /opt/cni/bin is present
+  ansible.builtin.file:
+    path: /opt/cni/bin
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+  become: true
+
+- name: Install CNI libs for flannel
+  ansible.builtin.include_tasks: cni_libs/{{ ansible_architecture }}.yml

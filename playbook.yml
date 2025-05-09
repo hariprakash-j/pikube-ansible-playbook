@@ -1,0 +1,12 @@
+---
+- name: Setup raspberry pi
+  hosts:
+    - kube_mains
+    - kube_nodes
+  roles:
+    - raspi_init
+    - raspi_config
+    - setup_containerd
+    - flannel_prerequsites
+    - disable_swap
+    - kube_packages

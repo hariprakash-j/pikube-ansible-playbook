@@ -1,0 +1,39 @@
+---
+- name: Add the public signing key for the Kubernetes package repositories
+  ansible.builtin.apt_key:
+    url: https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key
+    keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    state: present
+  become: true
+
+- name: Add the appropriate Kubernetes apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /"
+    state: present
+  become: true
+
+- name: Install kube packages
+  ansible.builtin.apt:
+    name:
+      - kubectl
+      - kubelet
+      - kubeadm
+    update_cache: true
+  become: true
+
+- name: Hold kube packages
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  become: true
+  loop:
+    - kubeadm
+    - kubectl
+    - kubelet
+
+- name: Enable kubelet service
+  ansible.builtin.service:
+    name: kubelet
+    state: running
+    enabled: true
+  become: true
